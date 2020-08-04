@@ -1,20 +1,30 @@
 const express = require('express');
-const controller = require('./controller');
+const Controller = require('./index');
 const response =  require('../../network/response');
 
 const router = express.Router();
 
 
-router.get('/',(req,res)=>{
-    controller.getUsers()
-        .then((data)=>{
-            response.success(req,res,data,'200');
-        })
-        .catch((e)=>{
-            response.error(req,res,e,'400');
-        })
+router.get('/',async (req,res)=>{
+    await  Controller.list()
+        .then(
+            (data)=>{response.success(req,res,data,'200')},
+            (err)=>{response.error(req,res,err,'400')} );
 });
 
+router.get('/:id',async (req,res)=>{
+    await  Controller.get(req.params.id)
+        .then(
+            (data)=>{response.success(req,res,data,'200')},
+            (err)=>{response.error(req,res,err,'400')} );
+});
+
+router.post('/',async (req,res)=>{
+    await  Controller.add(req.body)
+        .then(
+            (data)=>{response.success(req,res,data,'200')},
+            (err)=>{response.error(req,res,err,'400')} );
+});
 
 
 module.exports = router;
